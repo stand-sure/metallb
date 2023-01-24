@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mlb-test
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlb-test
+  namespace: mlb-test
+  labels:
+    app.kubernetes.io/name: mlb-test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mlb-test
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mlb-test
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlb-test-service
+  namespace: mlb-test
+spec:
+  selector:
+    app.kubernetes.io/name: mlb-test
+  ports:
+    - protocol: TCP
+      port: 80
+  type: LoadBalancer
